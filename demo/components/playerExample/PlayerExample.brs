@@ -28,10 +28,10 @@ sub onLoadStatusChanged()
 
     m.convivaAnalytics = CreateObject("roSGNode", "ConvivaAnalytics")
     player = m.bitmovinPlayer
-    customerKey = "CUSTOMER_KEY"
+    customerKey = "61a16fe47d5345ac124fee77eb07a2ed1a5b82ab"
     config = {
-      debuggingEnabled : true
-      gatewayUrl : "https://youraccount-test.testonly.conviva.com", ' TOUCHSTONE_SERVICE_URL for testing
+      debuggingEnabled : true,
+      gatewayUrl : "https://nbcsports-test.testonly.conviva.com" ' TOUCHSTONE_SERVICE_URL for testing
     }
     m.convivaAnalytics.callFunc("setup", player, customerKey, config)
     contentMetadataOverrides = {
@@ -44,6 +44,7 @@ sub onLoadStatusChanged()
     m.convivaAnalytics.callFunc("updateContentMetadata", contentMetadataOverrides)
 
     m.bitmovinPlayer.callFunc(m.BitmovinFunctions.SETUP, m.playerConfig)
+
   end if
 end sub
 
@@ -62,3 +63,28 @@ end sub
 sub onSeeked()
   print "SEEKED: "; m.bitmovinPlayer.seeked
 end sub
+
+function onKeyEvent(key as String, press as Boolean) as Boolean
+  handled = false
+  print "##### key received!"
+  if press AND (key = "down" OR key = "up" )
+    handled = true
+    if key = "up"
+      m.playerConfig = getExamplePlayerConfig2()
+    else 
+      m.playerConfig = getExamplePlayerConfig()
+    end if
+    ' m.bitmovinPlayer.callFunc(m.BitmovinFunctions.SETUP, m.playerConfig)
+    m.bitmovinPlayer.callFunc(m.BitmovinFunctions.LOAD, m.playerConfig.source)
+    contentMetadataOverrides = {
+      playerName: "Conviva Integration Test Channel",
+      viewerId: "MyAwesomeViewerId" + key,
+      tags: {
+        CustomKey: "CustomValue",
+        KeyPress: key
+      }
+    }
+    m.convivaAnalytics.callFunc("updateContentMetadata", contentMetadataOverrides)
+  end if
+  return handled
+end function

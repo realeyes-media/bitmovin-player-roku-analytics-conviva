@@ -137,7 +137,7 @@ sub onPlay()
   debugLog("[Player Event] onPlay")
   if not isSessionActive()
     createConvivaSession()
-  end if
+  end if 
 end sub
 
 sub onPlaying()
@@ -152,7 +152,7 @@ sub onSeek()
 end sub
 
 sub onSourceLoaded()
-  debugLog("[Player Event] onSourceLoaded")
+  debugLog("[Player Event] onSourceLoaded!")
   ' On source swap, onSourceUnloaded gets called, then onSourceLoaded gets called. But onSourceUnloaded
   ' has a 100ms delay that makes it close the session after onSourceLoaded. That is for cases of errors
   ' but for source swaps, we need to skip that delay, so we kill that timer
